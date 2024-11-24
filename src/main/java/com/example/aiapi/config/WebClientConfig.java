@@ -3,6 +3,7 @@ package com.example.aiapi.config;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -14,6 +15,10 @@ import java.time.Duration;
 
 @Configuration
 public class WebClientConfig {
+
+
+    @Value("${openai.api.key}")
+    private String openaiApiKey;
 
     @Bean
     public WebClient webClient() {
@@ -29,7 +34,7 @@ public class WebClientConfig {
         return WebClient.builder()
                 .baseUrl("https://api.openai.com/v1") // OpenAI API 기본 URL
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .defaultHeader("Authorization", "Bearer YOUR_API_KEY") // OpenAI API Key
+                .defaultHeader("Authorization", "Bearer " + openaiApiKey) // OpenAI API Key
                 .defaultHeader("Content-Type", "application/json")
                 .build();
     }
