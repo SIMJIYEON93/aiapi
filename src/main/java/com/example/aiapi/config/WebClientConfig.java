@@ -8,25 +8,29 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.tcp.TcpClient;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class WebClientConfig {
+
     @Bean
     public WebClient webClient() {
-        HttpClient httpClient = HttpClient.create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-                .responseTimeout(Duration.ofMillis(5000))
-                .doOnConnected(conn ->
-                        conn.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS))
-                                .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)));
+        TcpClient tcpClient = TcpClient.create()
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000) // 연결 타임아웃 10초
+                .doOnConnected(connection -> connection
+                        .addHandlerLast(new ReadTimeoutHandler(120)) // 읽기 타임아웃 120초
+                        .addHandlerLast(new WriteTimeoutHandler(120))); // 쓰기 타임아웃 120초
+
+        HttpClient httpClient = HttpClient.from(tcpClient)
+                .responseTimeout(Duration.ofSeconds(120));
 
         return WebClient.builder()
-                .baseUrl("https://dapi.kakao.com")
+                .baseUrl("https://api.openai.com/v1") // OpenAI API 기본 URL
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .defaultHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
+                .defaultHeader("Authorization", "Bearer YOUR_API_KEY") // OpenAI API Key
+                .defaultHeader("Content-Type", "application/json")
                 .build();
     }
 }
