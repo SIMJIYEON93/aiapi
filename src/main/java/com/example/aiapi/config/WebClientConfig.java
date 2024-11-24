@@ -36,6 +36,14 @@ public class WebClientConfig {
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .defaultHeader("Authorization", "Bearer " + openaiApiKey) // OpenAI API Key
                 .defaultHeader("Content-Type", "application/json")
+                .filter((request, next) -> {
+                    System.out.println("Request Method: " + request.method());
+                    System.out.println("Request URL: " + request.url());
+                    return next.exchange(request)
+                            .doOnNext(response -> {
+                                System.out.println("Response Status Code: " + response.statusCode());
+                            });
+                })
                 .build();
     }
 }
