@@ -31,7 +31,7 @@ public class TranslationRequest {
         // 시스템 메시지 추가
         messages.put(new JSONObject()
                 .put("role", "system")
-                .put("content", "Simplify the following text.")
+                .put("content", "글의 내용을 초등학교3학년이 이해할 수 있는 글로 번안해줘")
         );
 
         // 사용자 메시지 추가
