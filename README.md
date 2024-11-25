@@ -34,3 +34,37 @@
 ### 빌드 및 실행 환경
 - JDK 17 이상
 - Gradle 7.x 이상
+
+### Postman 요청 예시
+
+| **필드**       | **값**                                                                   |
+|----------------|--------------------------------------------------------------------------|
+| **Method**     | `POST`                                                                  |
+| **URL**        | `http://localhost:8080/api/v1/openai/translate`                         |
+| **Headers**    | `Content-Type: application/json`                                        |
+|                | `Authorization: Bearer <OPENAI_API_KEY>`                              |
+| **Body (JSON)**|                                                                         |
+|                | {                                                                       |
+|                |   "prompt": "양자 물리학의 기본 개념을 설명해 주세요.",                          |
+|                |   "maxTokens": 150                                                      |
+|                | }                                                                       |
+
+
+```
+Method: POST
+URL: https://api.openai.com/v1/chat/completions
+Headers:
+  - Content-Type: application/json
+  - Authorization: Bearer <YOUR_OPENAI_API_KEY>
+Body:
+{
+  "model": "gpt-4",
+  "messages": [
+    { "role": "system", "content": "이 글을 초등학생이 이해하기 쉬운 글로 바꿔줘." },
+    { "role": "user", "content": "양자 물리학의 기본 개념을 설명해 주세요." }
+  ],
+  "max_tokens": 150
+}
+```
+
+단, 스트리밍 응답 테스트 할때는 "Send and Download" 또는 "Raw Data Preview" 옵션을 사용해야 합니다
